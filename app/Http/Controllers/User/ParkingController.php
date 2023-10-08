@@ -12,10 +12,10 @@ class ParkingController extends Controller
 
     public function getInfoParking(ParkingService $parkingService)
     {
-        $ListparkingAll = PArking::all();
+        // $ListparkingAll = Parking::all();
         $listParking = [];
 
-        foreach ($ListparkingAll as $record) {
+        foreach (Parking::all() as $record) {
             $vehicleRegNo = $record->vehicle_reg_no;
             $entryTime = $record->entry_time;
             $exitTime = $record->exit_time;
