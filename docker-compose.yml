@@ -1,0 +1,72 @@
+version: "3"
+services:
+    parking-app:
+        build:
+            context: .
+            dockerfile: docker/DockerFile
+        image: parking:latest
+        container_name: "parking-app"
+        networks:
+            - app-network
+        restart: unless-stopped
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        ports:
+            - 5173:5173
+        volumes:
+            - ".:/var/www/html"
+            - "./docker/php.ini:/usr/local/etc/php/conf.d/php.ini"
+    nginx:
+        image: nginx:alpine
+        container_name: parking-nginx
+        restart: unless-stopped
+        ports:
+            - 8000:80
+        working_dir: "/var/www/html"
+        volumes:
+            - ".:/var/www/html"
+            - "./docker/nginx.conf:/etc/nginx/conf.d/default.conf"
+        networks:
+            - app-network
+        depends_on:
+            - parking-app
+    mariadb:
+        image: mariadb:10.11.2
+        container_name: parking-mariadb
+        restart: unless-stopped
+        environment:
+            MARIADB_ROOT_PASSWORD: "${DB_PASSWORD}"
+            MARIADB_DATABASE: "${DB_DATABASE}"
+            MARIADB_USER: "${DB_USERNAME}"
+            MARIADB_PASSWORD: "${DB_PASSWORD}"
+            MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+        ports:
+            - 3306:3306
+        volumes:
+            - "vol-parking-mariadb:/var/lib/mysql"
+        networks:
+            - app-network
+    redis:
+        image: redis:alpine3.16
+        container_name: parking-redis
+        restart: unless-stopped
+        environment:
+            - ALLOW_EMPTY_PASSWORD=yes
+        ports:
+            - "6382:6379"
+        networks:
+            - app-network
+    mailhog:
+        image: mailhog/mailhog:latest
+        container_name: parking-mailhog
+        ports:
+            - 1025:1025
+            - 8025:8025
+        networks:
+            - app-network
+networks:
+    app-network:
+        driver: bridge
+volumes:
+    vol-parking-mariadb:
+        driver: local

@@ -12,7 +12,6 @@ class ParkingController extends Controller
 
     public function getInfoParking(ParkingService $parkingService)
     {
-        // $ListparkingAll = Parking::all();
         $listParking = [];
 
         foreach (Parking::all() as $record) {
@@ -30,8 +29,6 @@ class ParkingController extends Controller
                 'amountPaid' => $amountPaid,
             ];
         }
-        // dd($listParkingAll);
-
 
         return Inertia::render('PageParking/listpark', [
             'listParking' => $listParking,
