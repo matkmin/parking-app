@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\ParkingController;
+use App\Http\Controllers\User\VehicleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,11 +28,9 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-
+    Route::get('/dashboard', [ParkingController::class, 'displayDashboard'])->name('dashboard');
     Route::get('/info-parking', [ParkingController::class, 'getInfoParking'])->name('info-parking');
+    Route::get('/info-vehicle', [VehicleController::class, 'getInfoVehicle'])->name('info-vehicle');
 });
 
 Route::middleware('auth')->group(function () {
