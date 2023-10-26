@@ -9,6 +9,10 @@ use App\Http\Controllers\Controller;
 
 class ParkingController extends Controller
 {
+    public function displayDashboard()
+    {
+        return Inertia::render("Dashboard");
+    }
 
     public function getInfoParking(ParkingService $parkingService)
     {
