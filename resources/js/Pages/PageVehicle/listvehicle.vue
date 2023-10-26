@@ -3,33 +3,41 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref } from 'vue';
+import Swal from 'sweetalert2';
 const showModal = ref(false);
 const props = defineProps(['vehicle']);
 
 const toggleAvailability = async (vehicle) => {
-
     const isAvailable = vehicle['Is Available'];
-
-    console.log(isAvailable);
-
     const confirmMessage = isAvailable
         ? 'Are you sure you want to mark this vehicle as unavailable?'
         : 'Are you sure you want to mark this vehicle as available?';
 
-    if (confirm(confirmMessage)) {
-        try {
-            const response = await axios.put(`api/vehicles/update-available/${vehicle.id}`, { isAvailable: !isAvailable });
+    Swal.fire({
+        title: 'Confirmation',
+        text: confirmMessage,
+        icon: 'info',
+        showCancelButton: true,
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const response = await axios.put(`api/vehicles/update-available/${vehicle.id}`, { isAvailable: !isAvailable });
 
-            if (response.status === 200) {
+                if (response.status === 200) {
+                    vehicle['Is Available'] = !isAvailable;
 
-                vehicle['Is Available'] = !isAvailable;
-            } else {
-                console.error("Failed with status: " + response.status);
+                    Swal.fire('Success', 'Vehicle availability updated!', 'success');
+                } else {
+
+                    Swal.fire('Error', `Failed with status: ${response.status}`, 'error');
+                }
+            } catch (err) {
+
+                Swal.fire('Error', 'An error occurred.', 'error');
+                console.error("Error:", err);
             }
-        } catch (err) {
-            console.error("Error:", err);
         }
-    }
+    });
 };
 
 const addVehicle = () => {

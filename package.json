@@ -20,6 +20,6 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.4.2",
         "chart.js": "^4.4.0",
-        "vue-toast-notification": "^3.1.1"
+        "vue-sweetalert2": "^5.0.5",
     }
 }
