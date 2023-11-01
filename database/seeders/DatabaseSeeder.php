@@ -21,5 +21,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ParkingSeeder::class);
         $this->call(VehicleSeeder::class);
         $this->call(VehicleRegisterSeeder::class);
+        $this->call(PermissionSeeder::class);
+        $this->call(RoleSeeder::class);
+        $this->call(UserSeeder::class);
     }
 }
