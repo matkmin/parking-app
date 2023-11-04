@@ -63,19 +63,20 @@ class User extends Authenticatable
 
     public function hasRole(RoleName $role): bool
     {
-        return $this->roles()->where('name', $role->name)->exists();
+        return $this->roles()->where('name', $role->value)->exists();
     }
 
-    public function permission(): array
+    public function permissions(): array
     {
         return $this->roles()->with('permissions')->get()
             ->map(function ($role) {
-                return $role->permission->pluck('name');
-            })->flatten()->value->unique()->toArray();
+                return $role->permissions->pluck('name');
+            })->flatten()->values()->unique()->toArray();
     }
+
 
     public function hasPermission(string $permission): bool
     {
-        return in_array($permission, $this->permission(), true);
+        return in_array($permission, $this->permissions(), true);
     }
 }
