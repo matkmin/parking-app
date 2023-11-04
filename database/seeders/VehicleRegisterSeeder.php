@@ -13,36 +13,17 @@ class VehicleRegisterSeeder extends Seeder
      */
     public function run(): void
     {
-        $registerInfo = [
-            [
-                'vehicle_id' => 1,
-                'reg_no' => 'ABC 123',
-                'state_reg_no' => 'CALIFORNIA',
+        for ($i = 1; $i <= 100; $i++) {
+            $registerInfo = [
+                'vehicle_id' => $i,
+                'reg_no' => 'ABC ' . rand(100, 999),
+                'state_reg_no' => 'STATE ' . rand(1, 50),
                 'register_date' => now(),
-                'register_fee' => 250,
-                'is_active' => true,
-            ],
-            [
-                'vehicle_id' => 2,
-                'reg_no' => 'XYZ 789',
-                'state_reg_no' => 'NEW YORK',
-                'register_date' => now(),
-                'register_fee' => 350,
-                'is_active' => true,
-            ],
-            [
-                'vehicle_id' => 3,
-                'reg_no' => 'EFG 456',
-                'state_reg_no' => 'TEXAS',
-                'register_date' => now(),
-                'register_fee' => 400,
-                'is_active' => false,
-            ],
-        ];
+                'register_fee' => rand(200, 500),
+                'is_active' => rand(0, 1) == 1, // Randomly set is_active to true or false
+            ];
 
-        foreach ($registerInfo as $info) {
-            DB::table('vehicle_register')->insert($info);
+            DB::table('vehicle_register')->insert($registerInfo);
         }
     }
 }
-
