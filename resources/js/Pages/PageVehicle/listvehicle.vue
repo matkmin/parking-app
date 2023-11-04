@@ -4,8 +4,21 @@ import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref } from 'vue';
 import Swal from 'sweetalert2';
+
 const showModal = ref(false);
 const props = defineProps(['vehicle']);
+const searchData = ref('');
+
+const newVehicle = ref({
+    vehicleBrand: '',
+    vehicleName: '',
+    vehiclePlateState: '',
+    vehicleYearRelease: '',
+    isAvailable: 1,
+    price: 0,
+});
+
+
 
 const toggleAvailability = async (vehicle) => {
     const isAvailable = vehicle['Is Available'];
@@ -46,27 +59,45 @@ const addVehicle = () => {
 
 const saveVehicle = async () => {
     try {
-        const response = await axios.post('api/vehicles/add-vehicle', newVehicle.value);
-
+        const response = await axios.post('/api/vehicles/add-vehicle', newVehicle.value);
+        console.log(response.status);
         if (response.status === 200) {
             showModal.value = false;
-            // console.log('test');
+        } else if (response.status === 422) {
 
-            newVehicle.value = {
-                vehicleBrand: '',
-                vehicleName: '',
-                vehiclePlateState: '',
-                vehicleYearRelease: '',
-                isAvailable: 1,
-                price: 0,
-            };
+            console.error("Validation failed");
+        } else if (response.status === 500) {
+
+            console.error("Server error");
+        } else {
+            console.error("Failed with status: " + response.status);
+        }
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+};
+
+
+const searchInfo = async () => {
+    try {
+        const response = await axios.get('api/vehicles/search-vehicle', {
+            params: {
+                data: searchData.value
+            }
+        });
+        // console.log(response.status);
+        if (response.status === 200) {
+            // console.log("Yeah");
+            vehicle.value = response.data;
+            // console.log(vehicle.value);
+
         }
         else {
             console.error("Failed with status: " + response.status);
         }
+    } catch (err) {
+        console.error("Error", err)
 
-    } catch (error) {
-        console.error("Error: ", error);
     }
 };
 
@@ -82,11 +113,19 @@ const saveVehicle = async () => {
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">Information Vehicle</h2>
             </template>
             <div class="py-12">
-                <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div class="py-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div class="mb-4 text-right">
                         <button
                             class="p-2 px-4 py-2 m-2 text-white transition-transform rounded-full shadow-md bg-gradient-to-r from-purple-500 to-purple-600 hover:shadow-lg hover:scale-105 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-300"
                             @click="addVehicle">Add Vehicle</button>
+                    </div>
+                    <div class="relative bg-white rounded-full shadow-md">
+                        <input v-model="searchData" @input="searchInfo"
+                            class="w-full px-4 py-2 text-gray-700 rounded-full focus:outline-none"
+                            placeholder="Searching Data...." />
+                        <div class="absolute inset-y-0 flex items-center pl-3 pointer-events-none left-3">
+                            <i class="text-gray-400 fas fa-search"></i>
+                        </div>
                     </div>
                     <div class="grid grid-cols-1 gap-4 mt-6 md:grid-cols-3 lg:grid-cols-4">
                         <div v-for="(vehicle, index) in vehicle" :key="index"
@@ -131,7 +170,7 @@ const saveVehicle = async () => {
                         <div class="fixed inset-0 transition-opacity" @click="showModal = false">
                             <div class="absolute inset-0 bg-black opacity-50"></div>
                         </div>
-                        <div class="relative max-w-4xl p-6 bg-white rounded-lg shadow-xl">
+                        <div class="relative p-10 py-5 bg-white rounded-lg shadow-xl">
                             <h2 class="mb-4 text-3xl font-semibold text-red-600">Add Vehicle</h2>
 
                             <div class="mb-4">
@@ -182,7 +221,7 @@ const saveVehicle = async () => {
 
                             <div class="text-right">
                                 <button
-                                    class="p-3 px-6 py-3 m-2 text-white transition-transform rounded-full shadow-md cursor-progress bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    class="p-3 px-6 py-3 m-2 text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     @click="saveVehicle">Save</button>
                             </div>
 

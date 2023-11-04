@@ -43,6 +43,20 @@ const showingNavigationDropdown = ref(false);
                                     Info Vehicle
                                 </NavLink>
                             </div>
+
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <NavLink :href="route('upload-documents')" :active="route().current('upload-documents')">
+                                    Upload Document
+                                </NavLink>
+                            </div>
+
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <NavLink v-if="can('admin.viewAny')" :href="route('admin.vehicles.index')"
+                                    :active="route().current('admin.vehicles.index')">
+                                    List Vehicle
+                                </NavLink>
+                            </div>
+
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
