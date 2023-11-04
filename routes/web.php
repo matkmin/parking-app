@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ListVehicleController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
@@ -31,12 +32,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [ParkingController::class, 'displayDashboard'])->name('dashboard');
     Route::get('/info-parking', [ParkingController::class, 'getInfoParking'])->name('info-parking');
     Route::get('/info-vehicle', [VehicleController::class, 'getInfoVehicle'])->name('info-vehicle');
+    Route::get('/upload-documents', [VehicleController::class, 'uploadDocuments'])->name('upload-documents');
 });
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::group([
+    'prefix'     => 'admin',
+    'as'         => 'admin.',
+    'middleware' => ['auth', 'verified'],
+], function () {
+    Route::resource('/vehicles', ListVehicleController::class);
 });
 
 require __DIR__ . '/auth.php';

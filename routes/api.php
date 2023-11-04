@@ -23,6 +23,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::put('/vehicles/update-available/{id}', [VehicleController::class, 'updateAvailable']);
 
-    Route::post('api/vehicles/add-vehicle', [VehicleController::class, 'storeVehicle']);
+    Route::post('/vehicles/add-vehicle', [VehicleController::class, 'storeVehicle']);
+
+    Route::get('/vehicles/search-vehicle', [VehicleController::class,'searchVehicles']);
 
 });
