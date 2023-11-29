@@ -235,22 +235,22 @@ const deleteDocument = async (docID) => {
                     <form v-if="can('user.create')" @submit.prevent="uploadDocument"
                         class="flex flex-col items-center justify-center w-full p-8 border-4 border-gray-300 border-dashed rounded dark:border-2">
                         <p class="mb-4 text-sm font-semibold md:text-base dark:text-red-400">
-                            The maximum size for each file to be uploaded is 2 MB.
-                            Only the following file types are acceptable: PDF, JPG, PNG.
+                            <span class="text-purple-500">Note:</span>
+                            The maximum size for each file to be uploaded is <span class="text-green-500">2 MB</span>.
+                            Only the following file types are acceptable: <span class="text-blue-500">PDF</span>.
                         </p>
 
-                        <InputLabel for="file" class="relative cursor-pointer">
-                            <button class="px-3 py-2 text-white bg-purple-500 rounded hover:bg-purple-600 focus:bg-purple-500">
-                                Select a file from your device
-                            </button>
-                            <TextInput
-                                id="file"
-                                type="file"
-                                v-model="form.file"
-                                :disabled="form.processing"
-                                @input="form.filename = $event.target.files[0].name"
-                                accept=".pdf" class="sr-only"
-                            />
+                        <InputLabel for="file"
+                            class="relative flex items-center justify-center px-4 py-2 text-sm font-medium text-white transition duration-300 ease-in-out bg-indigo-500 border border-transparent rounded-md cursor-pointer hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"
+                                    stroke="currentColor" class="inline-block w-5 h-5 mr-2">
+                                    <path fill-rule="evenodd" d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM1.6 11.85H0v3.999h.791v-1.342h.803c.287 0 .531-.057.732-.173.203-.117.358-.275.463-.474a1.42 1.42 0 0 0 .161-.677c0-.25-.053-.476-.158-.677a1.176 1.176 0 0 0-.46-.477c-.2-.12-.443-.179-.732-.179Zm.545 1.333a.795.795 0 0 1-.085.38.574.574 0 0 1-.238.241.794.794 0 0 1-.375.082H.788V12.48h.66c.218 0 .389.06.512.181.123.122.185.296.185.522Zm1.217-1.333v3.999h1.46c.401 0 .734-.08.998-.237a1.45 1.45 0 0 0 .595-.689c.13-.3.196-.662.196-1.084 0-.42-.065-.778-.196-1.075a1.426 1.426 0 0 0-.589-.68c-.264-.156-.599-.234-1.005-.234H3.362Zm.791.645h.563c.248 0 .45.05.609.152a.89.89 0 0 1 .354.454c.079.201.118.452.118.753a2.3 2.3 0 0 1-.068.592 1.14 1.14 0 0 1-.196.422.8.8 0 0 1-.334.252 1.298 1.298 0 0 1-.483.082h-.563v-2.707Zm3.743 1.763v1.591h-.79V11.85h2.548v.653H7.896v1.117h1.606v.638H7.896Z"/>
+                                </svg>
+                                <span class="inline-block">Select a file from your device</span>
+                            </span>
+                            <TextInput id="file" type="file" v-model="form.file" :disabled="form.processing"
+                                @input="form.filename = $event.target.files[0].name" accept=".pdf" class="sr-only" />
                         </InputLabel>
 
                         <InputError :message="form.errors.file" />
@@ -259,7 +259,7 @@ const deleteDocument = async (docID) => {
 
                         <div class="mt-3">
                             <PrimaryButton
-                            class="px-3 py-2 text-white bg-green-500 rounded hover:bg-green-600 focus:bg-green-500">
+                                class="px-3 py-2 text-white bg-green-500 rounded hover:bg-green-600 focus:bg-green-500">
                                 <span class="text-purple-500 dark:text-gray-100">
                                     {{ form.processing
                                         ? 'Uploading...'
