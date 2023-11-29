@@ -41,22 +41,14 @@ const savePermissionName = async () => {
             notify({
                 group: "success",
                 title: "Success",
-                text: "File uploaded successfully"
+                text: "Permission name has successfully saved"
             }, 4000);
-        }
-        else if (response.status === 422) {
-            notify({
-                group: "error",
-                title: "Error",
-                text: "You can only upload one document"
-            })
-
         }
         else {
             notify({
                 group: "error",
                 title: "Error",
-                text: "Error uploading file"
+                text: "Error change permission name"
             }, 4000);
         }
     } catch (error) {
