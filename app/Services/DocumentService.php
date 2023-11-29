@@ -4,12 +4,12 @@ namespace App\Services;
 
 use App\Models\UploadDocument;
 use App\Http\Requests\StoreFileRequest;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentService
 {
     public function storedocument(StoreFileRequest $storeFileRequest)
     {
-        // $checkdocument =
         if ($storeFileRequest->has('file')) {
             $file = $storeFileRequest->file('file');
             $path = $file->store('uploads', 'public');
@@ -36,5 +36,14 @@ class DocumentService
             return response()
                 ->json(['error' => 'You can only upload one document'], 422);
         }
+    }
+
+    public function deleteDocument($id)
+    {
+        $file = UploadDocument::findOrFail($id);
+
+        Storage::disk('public')->delete($file->file_path);
+
+        $file->delete();
     }
 }

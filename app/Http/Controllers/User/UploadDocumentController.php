@@ -8,8 +8,6 @@ use App\Models\UploadDocument;
 use App\Services\DocumentService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFileRequest;
-use App\Mail\DocumentVerifiedMail;
-
 class UploadDocumentController extends Controller
 {
     protected $document;
@@ -59,7 +57,7 @@ class UploadDocumentController extends Controller
 
     public function destroy($id)
     {
-        UploadDocument::destroy($id);
+        $this->document->deleteDocument($id);
     }
 
 }
