@@ -37,37 +37,54 @@ defineProps({
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                        Vehicle Name:
+                                        Vehicle Name
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                        Year:
+                                        Register Number
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                        Price:
+                                        Register State
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                        Is Available:
+                                        Register Fee
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                        Action:
+                                        Year
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                        Price
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                        Is Active
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                        Action
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <tr v-for="vehicle in vehicles" :key="vehicle.id">
-                                    <td class="px-6 py-4">{{ vehicle.id }}</td>
-                                    <td class="px-6 py-4">{{ vehicle.vehicle_type }}</td>
-                                    <td class="px-6 py-4">{{ vehicle.year }}</td>
-                                    <td class="px-6 py-4">RM {{ vehicle.price }}</td>
+                            <tbody class="text-center bg-white divide-y divide-gray-200">
+                                <tr v-for="vehicle in vehicles" :key="vehicle.vehicle.id">
+                                    <td class="px-6 py-4">{{ vehicle.vehicle.id }}</td>
+                                    <td class="px-6 py-4">{{ vehicle.vehicle.vehicle_type }}</td>
+                                    <td class="px-6 py-4">{{ vehicle.reg_no }}</td>
+                                    <td class="px-6 py-4">{{ vehicle.state_reg_no }}</td>
+                                    <td class="px-6 py-4">RM {{ vehicle.register_fee }}</td>
+                                    <td class="px-6 py-4">{{ vehicle.vehicle.year }}</td>
+                                    <td class="px-6 py-4">RM {{ vehicle.vehicle.price }}</td>
                                     <td class="px-6 py-4">
-                                        {{ vehicle.is_available ? 'Still Available' : 'Out of Stock' }}
+                                        <span  :class="{ 'text-green-600': vehicle.is_active, 'text-red-600': !vehicle.is_active }">
+                                            {{ vehicle.is_active ? 'Activated' : 'Deactivated' }}
+                                        </span>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <Link v-if="can('admin.update')" :href="route('admin.vehicles.edit', vehicle)"
+                                        <Link v-if="can('admin.update')" :href="route('admin.vehicles.edit', vehicle.id)"
                                             class="inline-flex items-center px-3 py-2 m-2 text-sm text-white transition-transform rounded-full shadow-md cursor-pointer btn btn-secondary bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 hover:shadow-2xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400">
                                         <span>Edit</span>
                                         </Link>
@@ -95,7 +112,6 @@ defineProps({
                             </div> -->
                         </table>
                     </div>
-
                 </div>
             </div>
         </AuthenticatedLayout>

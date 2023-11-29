@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\ListVehicleController;
+use App\Http\Controllers\Admin\UserController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\ParkingController;
+use App\Http\Controllers\User\UploadDocumentController;
 use App\Http\Controllers\User\VehicleController;
 
 /*
@@ -32,7 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [ParkingController::class, 'displayDashboard'])->name('dashboard');
     Route::get('/info-parking', [ParkingController::class, 'getInfoParking'])->name('info-parking');
     Route::get('/info-vehicle', [VehicleController::class, 'getInfoVehicle'])->name('info-vehicle');
-    Route::get('/upload-documents', [VehicleController::class, 'uploadDocuments'])->name('upload-documents');
+
 });
 
 Route::middleware('auth')->group(function () {
@@ -42,11 +44,31 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::group([
-    'prefix'     => 'admin',
-    'as'         => 'admin.',
+    'prefix' => 'admin',
+    'as' => 'admin.',
     'middleware' => ['auth', 'verified'],
 ], function () {
     Route::resource('/vehicles', ListVehicleController::class);
+    Route::get('/users', [UserController::class, 'index'])->name('user.list');
+    Route::get('/permissions', [UserController::class, 'permission'])->name('permission.list');
+    Route::get('/roles', [UserController::class, 'role'])->name('roles.list');
+    Route::post('/verifydocument/{id}', [UploadDocumentController::class, 'verify'])->name('document.verify');
+    Route::post('/update-permission/{userID}', [UserController::class, 'changePermission'])->name('change.permission');
+    Route::patch('/edit-permission/{id}', [UserController::class, 'editPermission'])->name('edit.permission');
+
+});
+
+Route::group([
+    'prefix' => 'user',
+    'as' => 'user.',
+    'middleware' => ['auth', 'verified'],
+], function () {
+    Route::get('/uploaddocument', [UploadDocumentController::class, 'upload'])->name('upload.index');
+    Route::post('/upload', [UploadDocumentController::class, 'store'])->name('upload.store');
+    Route::get('/view/{filename}', [UploadDocumentController::class, 'view'])->name('document.view');
+    Route::delete('/delete/{id}', [UploadDocumentController::class, 'destroy'])->name('document.delete');
+
+
 });
 
 require __DIR__ . '/auth.php';

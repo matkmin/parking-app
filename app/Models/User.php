@@ -51,7 +51,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
-    public function isAdmin(): bool
+    public function scopeIsAdmin(): bool
     {
         return $this->hasRole(RoleName::ADMIN);
     }
@@ -71,12 +71,21 @@ class User extends Authenticatable
         return $this->roles()->with('permissions')->get()
             ->map(function ($role) {
                 return $role->permissions->pluck('name');
-            })->flatten()->values()->unique()->toArray();
+            })
+            ->flatten()
+            ->values()
+            ->unique()
+            ->toArray();
     }
 
 
     public function hasPermission(string $permission): bool
     {
         return in_array($permission, $this->permissions(), true);
+    }
+
+    public function uploadedDocuments()
+    {
+        return $this->hasMany(UploadDocument::class);
     }
 }

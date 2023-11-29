@@ -78,9 +78,4 @@ class VehicleController extends Controller
 
         return response()->json(['message' => 'Success'], 200);
     }
-
-    public function uploadDocuments(Request $request)
-    {
-        return Inertia::render('UploadDocument/uploaddocument');
-    }
 }

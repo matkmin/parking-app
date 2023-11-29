@@ -59,7 +59,7 @@ const addVehicle = () => {
 
 const saveVehicle = async () => {
     try {
-        const response = await axios.post('/api/vehicles/add-vehicle', newVehicle.value);
+        const response = await axios.post('api/vehicles/add-vehicle', newVehicle.value);
         console.log(response.status);
         if (response.status === 200) {
             showModal.value = false;

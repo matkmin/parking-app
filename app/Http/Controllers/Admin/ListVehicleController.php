@@ -3,77 +3,77 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreVehicleRequest;
+use App\Http\Requests\UpdateVehicleRequest;
+use App\Models\RegisterVehicle;
 use App\Models\Vehicle;
-use Illuminate\Http\Request;
+use App\Services\vehicleService;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ListVehicleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct(
+        private vehicleService $vehicleServices
+    ) {
+    }
     public function index(): Response
     {
         $this->authorize('admin.viewAny');
 
-
-        return Inertia::render('Admin/Index', [
-            'vehicles' => Vehicle::with(['vehicleRegister'])->get(),
+        return Inertia::render('Admin/ManageVehicle/Index', [
+            'vehicles' => RegisterVehicle::with(['vehicle'])->get(),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $this->authorize('admin.create');
 
-        return Inertia::render('Admin/Create');
+        return Inertia::render('Admin/ManageVehicle/Create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreVehicleRequest $storeVehicleRequest): RedirectResponse
     {
-        //
+        $this->vehicleServices->createVehicle(
+            $storeVehicleRequest->validated()
+        );
+
+        return to_route('admin.vehicle.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    // public function show(Vehicle $vehicle): Response
-    // {
-    //     $vehicle->load("user.any");
+    public function show(Vehicle $vehicle): Response
+    {
+        $vehicle->load("user.any");
 
-    //     return Inertia::render('Admin/Index', [
-    //         'vehicle' => $vehicle,
-    //     ]);
-    // }
+        return Inertia::render('Admin/ManageVehicle/Index', [
+            'vehicle' => $vehicle,
+        ]);
+    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(): Response
+    public function edit(Vehicle $vehicle): Response
     {
         $this->authorize('admin.update');
 
-        return Inertia::render('Admin/Edit');
+        return Inertia::render('Admin/ManageVehicle/Edit', [
+            'vehicle' => $vehicle,
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Vehicle $vehicle, UpdateVehicleRequest $request): RedirectResponse
     {
-        //
+        $this->authorize('admin.update');
+
+        $this->vehicleServices->updateVehicle(
+            $vehicle,
+            $request->validated()
+        );
+
+        return to_route('admin.vehicle.index')
+            ->withStatus('Updated');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
