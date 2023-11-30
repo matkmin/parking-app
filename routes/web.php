@@ -53,7 +53,7 @@ Route::group([
     Route::get('/permissions', [UserController::class, 'permission'])->name('permission.list');
     Route::get('/roles', [UserController::class, 'role'])->name('roles.list');
     Route::post('/verifydocument/{id}', [UploadDocumentController::class, 'verify'])->name('document.verify');
-    Route::post('/update-permission/{userID}', [UserController::class, 'changePermission'])->name('change.permission');
+    Route::patch('/update-permission/{userID}', [UserController::class, 'changePermission'])->name('change.permission');
     Route::patch('/edit-permission/{id}', [UserController::class, 'editPermission'])->name('edit.permission');
 
 });
@@ -65,10 +65,7 @@ Route::group([
 ], function () {
     Route::get('/uploaddocument', [UploadDocumentController::class, 'upload'])->name('upload.index');
     Route::post('/upload', [UploadDocumentController::class, 'store'])->name('upload.store');
-    Route::get('/view/{filename}', [UploadDocumentController::class, 'view'])->name('document.view');
     Route::delete('/delete/{id}', [UploadDocumentController::class, 'destroy'])->name('document.delete');
-
-
 });
 
 require __DIR__ . '/auth.php';

@@ -8,6 +8,8 @@ use App\Models\UploadDocument;
 use App\Services\DocumentService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFileRequest;
+use Illuminate\Support\Facades\Storage;
+
 class UploadDocumentController extends Controller
 {
     protected $document;
@@ -42,17 +44,6 @@ class UploadDocumentController extends Controller
         $status = $request->get('status', false) == 'verified' ? true : false;
 
         $this->document->verifyDocument($id, $status);
-    }
-
-    public function view($filename)
-    {
-        $filePath = public_path('uploads/' . $filename);
-
-        if (file_exists($filePath)) {
-            return response()->file($filePath);
-        } else {
-            abort(404);
-        }
     }
 
     public function destroy($id)
