@@ -18,13 +18,14 @@ class UploadDocumentController extends Controller
         $this->document = $document;
     }
 
-    public function upload(UploadDocument $uploadDocument)
+    public function uploadDocument(UploadDocument $uploadDocument)
     {
         $documents = $uploadDocument::with(['user'])
             ->when(
                 !auth()->user()->isAdmin(),
                 fn($q) => $q->where('user_id', auth()->user()->id)
             )
+            ->orderBy('created_at')
             ->get();
 
         return Inertia::render('User/UploadDocument/uploaddocument', [

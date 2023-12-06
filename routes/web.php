@@ -1,14 +1,16 @@
 <?php
 
-use App\Http\Controllers\Admin\ListVehicleController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\PermissionController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\User\ParkingController;
-use App\Http\Controllers\User\UploadDocumentController;
 use App\Http\Controllers\User\VehicleController;
+use App\Http\Controllers\Admin\ListVehicleController;
+use App\Http\Controllers\User\UploadDocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,12 +52,18 @@ Route::group([
 ], function () {
     Route::resource('/vehicles', ListVehicleController::class);
     Route::get('/users', [UserController::class, 'index'])->name('user.list');
-    Route::get('/permissions', [UserController::class, 'permission'])->name('permission.list');
-    Route::get('/roles', [UserController::class, 'role'])->name('roles.list');
+    Route::patch('edit-username/{userID}', [UserController::class, 'updateUserName'])->name('update.username');
+    Route::patch('edit-useremail/{userID}', [UserController::class, 'updateUserEmail'])->name('update.useremail');
+    Route::delete('/delete-user/{userID}', [UserController::class, 'deleteUser'])->name('delete.user');
+    Route::get('/permissions', [PermissionController::class, 'permission'])->name('permission.list');
+    Route::post('/update-permission/{roleID}', [PermissionController::class, 'changePermission'])->name('change.permission');
+    Route::patch('/edit-permission/{id}', [PermissionController::class, 'editPermission'])->name('edit.permission');
+    Route::delete('/delete-permission/{id}', [PermissionController::class, 'deletePermissionName'])->name('delete.permission.name');
+    Route::get('/roles', [RoleController::class, 'role'])->name('roles.list');
+    Route::post('/add-role', [RoleController::class, 'addRole'])->name('add.role');
+    Route::post('/change-role/{userID}', [RoleController::class, 'changeRole'])->name('change.role');
+    Route::delete('/delete-role/{roleID}', [RoleController::class, 'deleteRole'])->name('delete.role');
     Route::post('/verifydocument/{id}', [UploadDocumentController::class, 'verify'])->name('document.verify');
-    Route::patch('/update-permission/{userID}', [UserController::class, 'changePermission'])->name('change.permission');
-    Route::patch('/edit-permission/{id}', [UserController::class, 'editPermission'])->name('edit.permission');
-
 });
 
 Route::group([
@@ -63,7 +71,7 @@ Route::group([
     'as' => 'user.',
     'middleware' => ['auth', 'verified'],
 ], function () {
-    Route::get('/uploaddocument', [UploadDocumentController::class, 'upload'])->name('upload.index');
+    Route::get('/uploaddocument', [UploadDocumentController::class, 'uploadDocument'])->name('upload.index');
     Route::post('/upload', [UploadDocumentController::class, 'store'])->name('upload.store');
     Route::delete('/delete/{id}', [UploadDocumentController::class, 'destroy'])->name('document.delete');
 });

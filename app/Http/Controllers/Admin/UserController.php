@@ -5,67 +5,49 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Role;
 use App\Models\User;
 use Inertia\Inertia;
-use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
-    public function index(User $user)
+    public function index(User $user, Role $role)
     {
         $this->authorize('admin.viewAny');
 
-        $list = $user::whereDoesntHave('roles', function ($q) {
+        $list = $user::query()
+        ->with('roles')
+        ->whereDoesntHave('roles', function ($q) {
             $q->where('name', 'admin');
         })->get();
 
+        $roles = $role::all();
+
         return Inertia::render('Admin/ManageUser/Index', [
-            "users" => $list,
+            'users' => $list,
+            'roles' => $roles,
         ]);
     }
-
-    public function permission()
+    public function updateUserName(Request $request, $userID)
     {
-        $this->authorize('admin.viewAny');
-
-        return Inertia::render('Admin/ManagePermission/Index', [
-            'permissions' => Permission::all(),
+        User::findOrFail($userID)->update([
+            'name' => $request->get('name', false)
         ]);
     }
-
-    public function role()
+    public function updateUserEmail(Request $request, $userID)
     {
-        $this->authorize('admin.viewAny');
-
-        $roles = Role::with('permissions')->get();
-
-        $permission = Permission::all();
-
-        return Inertia::render('Admin/ManageRole/Index', [
-            'roles' =>  $roles,
-            'permissions' => $permission,
+        User::findOrFail($userID)->update([
+            'email' => $request->get('email', false)
         ]);
     }
 
-    public function changePermission ($id, Request $request){
-        $user = User::findOrFail($id);
-
-        $changePermission = $request->get('permission', []);
-
-        foreach ($user->roles as $role){
-            $role->permissions()->sync($changePermission[$role->id] ?? []);
-            dd($role);
-        }
-    }
-
-    public function editPermission($id, Request $request)
+    public function deleteUser($userID)
     {
-        $request->validate([
-            'permission_name' => 'required|string|max:255',
-        ]);
+        $user = User::findOrFail($userID);
 
-        Permission::findOrFail($id)->update([
-            'name' => $request->get('permission_name')
-        ]);
+        $user->uploadedDocuments()->delete();
+
+        $user->roles()->detach();
+
+        $user->delete();
     }
 }

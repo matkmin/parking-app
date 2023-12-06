@@ -32,7 +32,7 @@ class vehicleService
             'price' => $attributes['price'],
             'is_available' => $attributes['is_available'],
         ]);
-
+        // $vehicle->fill($attributes)->update();
         return $vehicle;
     }
 }
