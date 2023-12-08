@@ -6,12 +6,46 @@ import axios from 'axios';
 import { notify } from "notiwind";
 import AlertByNotify from '@/Components/AlertByNotify.vue';
 import Swal from 'sweetalert2';
+import { ref } from 'vue';
 
 const props = defineProps({
     permissions: {
         type: Array
     }
 });
+
+
+const newPermissionName = ref(null);
+
+const addNewPermissionName = async () => {
+    try {
+        const response = await axios.post(route('admin.add.permission'), {
+            name: newPermissionName.value,
+        });
+        if (response.status === 200) {
+            notify({
+                group: "success",
+                title: "Success",
+                text: "New permission name was added successfully"
+            }, 4000);
+            newPermissionName.value = '';
+            window.location.reload();
+        } else {
+            notify({
+                group: "error",
+                title: "Error",
+                text: "Failed to add permission name"
+            }, 4000);
+        }
+    } catch (error) {
+        console.error('Error adding permission name:', error);
+        notify({
+            group: "error",
+            title: "Error",
+            text: "An error occurred while adding the permission name"
+        }, 4000);
+    }
+}
 
 const savePermissionName = async (permission) => {
     try {
@@ -97,6 +131,16 @@ const deletePermissionName = async (permission) => {
             </AlertByNotify>
             <div class="py-12">
                 <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                    <div class="mb-2">
+                        <div class="flex items-center px-2">
+                            <InputLabel class="mr-2">
+                                Press Enter to Save New Permission Name:
+                            </InputLabel>
+                            <TextInput class="w-1/2 mr-2 text-sm" v-model="newPermissionName" @keyup.enter="addNewPermissionName"
+                                placeholder="Enter new permission name (example: admin.test)">
+                            </TextInput>
+                        </div>
+                    </div>
                     <div class="overflow-x-auto bg-white border rounded-md shadow-md">
                         <div class="p-6 text-gray-900">
                             <table class="min-w-full overflow-hidden">

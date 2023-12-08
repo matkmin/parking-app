@@ -56,6 +56,7 @@ Route::group([
     Route::patch('edit-useremail/{userID}', [UserController::class, 'updateUserEmail'])->name('update.useremail');
     Route::delete('/delete-user/{userID}', [UserController::class, 'deleteUser'])->name('delete.user');
     Route::get('/permissions', [PermissionController::class, 'permission'])->name('permission.list');
+    Route::post('/add-permission', [PermissionController::class, 'addNewPermission'])->name('add.permission');
     Route::post('/update-permission/{roleID}', [PermissionController::class, 'changePermission'])->name('change.permission');
     Route::patch('/edit-permission/{id}', [PermissionController::class, 'editPermission'])->name('edit.permission');
     Route::delete('/delete-permission/{id}', [PermissionController::class, 'deletePermissionName'])->name('delete.permission.name');

@@ -24,10 +24,20 @@ class PermissionController extends Controller
 
         Role::findOrFail($roleID)->permissions()->sync($permissions);
     }
+    public function addNewPermission(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|unique:permission|max:255',
+        ]);
+
+        Permission::create([
+            'name' => $request->get('name')
+        ]);
+    }
     public function editPermission($id, Request $request)
     {
         $request->validate([
-            'permission_name' => 'required|string|max:255',
+            'permission_name' => 'required|string|unique:permission|max:255',
         ]);
 
         Permission::findOrFail($id)->update([
