@@ -27,7 +27,7 @@ class PermissionController extends Controller
     public function addNewPermission(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|unique:permission|max:255',
+            'name' => 'required|string|max:255',
         ]);
 
         Permission::create([
@@ -37,7 +37,7 @@ class PermissionController extends Controller
     public function editPermission($id, Request $request)
     {
         $request->validate([
-            'permission_name' => 'required|string|unique:permission|max:255',
+            'permission_name' => 'required|string|max:255',
         ]);
 
         Permission::findOrFail($id)->update([
@@ -47,6 +47,10 @@ class PermissionController extends Controller
 
     public function deletePermissionName($id)
     {
-        Permission::findOrFail($id)->delete();
+        $permission = Permission::findOrFail($id);
+
+        $permission->roles()->detach();
+
+        $permission->delete();
     }
 }

@@ -9,6 +9,7 @@ import AlertByNotify from '@/Components/AlertByNotify.vue';
 import { notify } from "notiwind";
 import Swal from 'sweetalert2';
 import TextInput from '@/Components/TextInput.vue';
+import InputError from '@/Components/InputError.vue';
 
 defineProps({
     roles: {
@@ -125,12 +126,20 @@ const addNewRole = async () => {
             }, 4000);
         }
     } catch (error) {
-        console.error('Error adding role:', error);
-        notify({
-            group: "error",
-            title: "Error",
-            text: "An error occurred while adding the role"
-        }, 4000);
+        if (error.response && error.response.status === 422) {
+            notify({
+                group: "error",
+                title: "Error",
+                text: error.response.data.errors.name[0] || "An error occurred"
+            }, 4000);
+        } else {
+            // Handle other errors
+            notify({
+                group: "error",
+                title: "Error",
+                text: "An error occurred while adding the role"
+            }, 4000);
+        }
     }
 };
 

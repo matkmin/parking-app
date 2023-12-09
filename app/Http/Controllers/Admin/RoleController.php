@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Role;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Permission;
 use Illuminate\Http\Request;
@@ -34,9 +35,13 @@ class RoleController extends Controller
         ]);
     }
 
-    public function changeRole()
+    public function changeRole($userID, Request $request)
     {
+        $user = User::findOrFail($userID);
 
+        $roleID = $request->get('role', false);
+
+        $user->roles()->sync($roleID);
     }
     public function deleteRole($roleID)
     {

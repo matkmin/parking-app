@@ -15,10 +15,10 @@ class UserController extends Controller
         $this->authorize('admin.viewAny');
 
         $list = $user::query()
-        ->with('roles')
-        ->whereDoesntHave('roles', function ($q) {
-            $q->where('name', 'admin');
-        })->get();
+            ->with('roles')
+            ->whereDoesntHave('roles', function ($q) {
+                $q->where('name', 'admin');
+            })->get();
 
         $roles = $role::all();
 
@@ -35,6 +35,9 @@ class UserController extends Controller
     }
     public function updateUserEmail(Request $request, $userID)
     {
+        $request->validate([
+            'email' => 'required|email|unique:users,email,' . $userID,
+        ]);
         User::findOrFail($userID)->update([
             'email' => $request->get('email', false)
         ]);
