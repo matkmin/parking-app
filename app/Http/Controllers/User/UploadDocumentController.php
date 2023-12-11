@@ -25,7 +25,7 @@ class UploadDocumentController extends Controller
                 !auth()->user()->isAdmin(),
                 fn($q) => $q->where('user_id', auth()->user()->id)
             )
-            ->orderBy('created_at')
+            ->latest()
             ->paginate(10)
             ->withQueryString();
 

@@ -13,17 +13,20 @@ import Pagination from "@/Components/Pagination.vue";
 
 defineProps({
     documents: {
-        type: Array
+        type: Object
     }
 });
 
 const form = useForm({
     file: '',
     filename: '',
+    processing: false,
 
 });
 
 const uploadDocument = async () => {
+    form.processing = true;
+
     const fileInput = document.getElementById('file');
     const file = fileInput.files[0];
 
@@ -40,43 +43,43 @@ const uploadDocument = async () => {
 
             if (response.status === 200) {
                 notify({
-                    group: "success",
-                    title: "Success",
-                    text: "File uploaded successfully"
+                    group: 'success',
+                    title: 'Success',
+                    text: 'File uploaded successfully',
                 }, 4000);
                 window.location.reload();
-            }
-            else if (response.status === 422) {
-                notify({
-                    group: "error",
-                    title: "Error",
-                    text: "You can only upload one document"
-                })
-
-            }
-            else {
-                notify({
-                    group: "error",
-                    title: "Error",
-                    text: "Error uploading file"
-                }, 4000);
-            }
-
-        } catch (error) {
+            } else if (error.response && error.response.status === 422) {
             notify({
                 group: "error",
                 title: "Error",
-                text: "Error uploading file"
+                text: error.response.data.errors.file[0] || "An error occurred"
             }, 4000);
+            } else {
+                notify({
+                    group: 'error',
+                    title: 'Error',
+                    text: 'Error uploading file',
+                }, 4000);
+            }
+        } catch (error) {
+            notify({
+                group: 'error',
+                title: 'Error',
+                text: 'Error uploading file',
+            }, 4000);
+        } finally {
+            form.processing = false;
         }
     } else {
         notify({
-            group: "error",
-            title: "Error",
-            text: "No file selected"
+            group: 'error',
+            title: 'Error',
+            text: 'No file selected',
         }, 4000);
+        form.processing = false;
     }
 };
+
 
 const changeVerifyStatus = async (doc) => {
     const status = doc.status;
@@ -180,47 +183,49 @@ const viewDocument = (docPath) => {
             <AlertByNotify></AlertByNotify>
             <div class="py-12">
                 <div class="py-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <form v-if="can('user.create')" @submit.prevent="uploadDocument"
-                        class="flex flex-col items-center justify-center w-full p-8 border-4 border-gray-300 border-dashed rounded dark:border-2">
-                        <p class="mb-4 text-sm font-semibold md:text-base dark:text-red-400">
-                            <span class="text-purple-500">Note:</span>
-                            The maximum size for each file to be uploaded is <span class="text-green-500">2 MB
-                            </span>.
-                            Only the following file types are acceptable:
-                            <span class="font-extrabold text-blue-500">PDF
-                            </span>.
-                        </p>
+                    <div class="p-8 border-4 border-gray-300 border-dashed rounded dark:border-2">
+                        <form v-if="can('user.create')" @submit.prevent="uploadDocument"
+                            class="flex flex-col items-center justify-center w-full ">
+                            <p class="mb-4 text-sm font-semibold md:text-base dark:text-red-400">
+                                <span class="text-purple-500">Note:</span>
+                                The maximum size for each file to be uploaded is <span class="text-green-500">2 MB
+                                </span>.
+                                Only the following file types are acceptable:
+                                <span class="font-extrabold text-blue-500">PDF
+                                </span>.
+                            </p>
 
-                        <InputLabel for="file"
-                            class="relative flex items-center justify-center px-4 py-2 text-sm font-medium text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                            <span>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"
-                                    stroke="currentColor" class="inline-block w-5 h-5 mr-2">
-                                    <path fill-rule="evenodd"
-                                        d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM1.6 11.85H0v3.999h.791v-1.342h.803c.287 0 .531-.057.732-.173.203-.117.358-.275.463-.474a1.42 1.42 0 0 0 .161-.677c0-.25-.053-.476-.158-.677a1.176 1.176 0 0 0-.46-.477c-.2-.12-.443-.179-.732-.179Zm.545 1.333a.795.795 0 0 1-.085.38.574.574 0 0 1-.238.241.794.794 0 0 1-.375.082H.788V12.48h.66c.218 0 .389.06.512.181.123.122.185.296.185.522Zm1.217-1.333v3.999h1.46c.401 0 .734-.08.998-.237a1.45 1.45 0 0 0 .595-.689c.13-.3.196-.662.196-1.084 0-.42-.065-.778-.196-1.075a1.426 1.426 0 0 0-.589-.68c-.264-.156-.599-.234-1.005-.234H3.362Zm.791.645h.563c.248 0 .45.05.609.152a.89.89 0 0 1 .354.454c.079.201.118.452.118.753a2.3 2.3 0 0 1-.068.592 1.14 1.14 0 0 1-.196.422.8.8 0 0 1-.334.252 1.298 1.298 0 0 1-.483.082h-.563v-2.707Zm3.743 1.763v1.591h-.79V11.85h2.548v.653H7.896v1.117h1.606v.638H7.896Z" />
-                                </svg>
-                                <span class="inline-block ">Select a file from your device</span>
-                            </span>
-                            <TextInput id="file" type="file" v-model="form.file" :disabled="form.processing"
-                                @input="form.filename = $event.target.files[0].name" accept=".pdf" class="sr-only" />
-                        </InputLabel>
-
-                        <InputError :message="form.errors.file" />
-
-                        <span class="mt-4 text-xs text-rose-800 md:text-sm">{{ form.filename }}</span>
-
-                        <div class="mt-3">
-                            <PrimaryButton
-                                class="px-3 py-2 text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-400">
-                                <span class="text-purple-500 dark:text-gray-100">
-                                    {{ form.processing
-                                        ? 'Uploading...'
-                                        : 'Upload Document' }}
+                            <InputLabel for="file"
+                                class="relative flex items-center justify-center px-4 py-2 text-sm font-medium text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"
+                                        stroke="currentColor" class="inline-block w-5 h-5 mr-2">
+                                        <path fill-rule="evenodd"
+                                            d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM1.6 11.85H0v3.999h.791v-1.342h.803c.287 0 .531-.057.732-.173.203-.117.358-.275.463-.474a1.42 1.42 0 0 0 .161-.677c0-.25-.053-.476-.158-.677a1.176 1.176 0 0 0-.46-.477c-.2-.12-.443-.179-.732-.179Zm.545 1.333a.795.795 0 0 1-.085.38.574.574 0 0 1-.238.241.794.794 0 0 1-.375.082H.788V12.48h.66c.218 0 .389.06.512.181.123.122.185.296.185.522Zm1.217-1.333v3.999h1.46c.401 0 .734-.08.998-.237a1.45 1.45 0 0 0 .595-.689c.13-.3.196-.662.196-1.084 0-.42-.065-.778-.196-1.075a1.426 1.426 0 0 0-.589-.68c-.264-.156-.599-.234-1.005-.234H3.362Zm.791.645h.563c.248 0 .45.05.609.152a.89.89 0 0 1 .354.454c.079.201.118.452.118.753a2.3 2.3 0 0 1-.068.592 1.14 1.14 0 0 1-.196.422.8.8 0 0 1-.334.252 1.298 1.298 0 0 1-.483.082h-.563v-2.707Zm3.743 1.763v1.591h-.79V11.85h2.548v.653H7.896v1.117h1.606v.638H7.896Z" />
+                                    </svg>
+                                    <span class="inline-block ">Select a file from your device</span>
                                 </span>
-                            </PrimaryButton>
-                        </div>
-                    </form>
+                                <TextInput id="file" type="file" v-model="form.file" :disabled="form.processing"
+                                    @input="form.filename = $event.target.files[0].name" accept=".pdf" class="sr-only" />
+                            </InputLabel>
 
+                            <InputError :message="form.errors.file" />
+
+                            <span class="mt-4 text-xs text-rose-800 md:text-sm">{{ form.filename }}</span>
+
+                            <div class="mt-3">
+                                <PrimaryButton
+                                    :disabled="form.processing"
+                                    class="px-3 py-2 text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-400">
+                                    <span class="text-purple-500 dark:text-gray-100">
+                                        {{ form.processing
+                                            ? 'Uploading...'
+                                            : 'Upload Document' }}
+                                    </span>
+                                </PrimaryButton>
+                            </div>
+                        </form>
+                    </div>
                     <div class="overflow-x-auto bg-white border rounded-md shadow-md">
                         <div class="p-6 text-gray-900">
                             <table class="min-w-full overflow-hidden">
