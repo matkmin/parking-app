@@ -7,13 +7,13 @@ const props = defineProps(['listParking']);
 
 <template>
     <div>
-
         <Head title="Information Parking" />
         <AuthenticatedLayout>
             <template #header>
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">Information Parking</h2>
             </template>
-            <div class="mt-4">
+            <div class="py-12">
+                <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-x-auto">
                     <table class="w-full overflow-hidden divide-y divide-gray-200 rounded-lg min-w-max whitespace-nowrap">
                         <thead class="bg-gray-50">
@@ -47,6 +47,7 @@ const props = defineProps(['listParking']);
                         </tbody>
                     </table>
                 </div>
+            </div>
             </div>
         </AuthenticatedLayout>
     </div>

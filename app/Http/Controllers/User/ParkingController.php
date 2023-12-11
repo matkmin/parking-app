@@ -3,12 +3,22 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Parking;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Services\ParkingService;
 use App\Http\Controllers\Controller;
 
 class ParkingController extends Controller
 {
+    public function displayDashboard(User $user)
+    {
+        $user = auth()->user();
+
+        // dd($user);
+        return Inertia::render("Dashboard", [
+            "user" => $user,
+        ]);
+    }
 
     public function getInfoParking(ParkingService $parkingService)
     {

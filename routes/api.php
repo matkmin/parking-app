@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\User\VehicleController;
+use App\Http\Controllers\User\UploadDocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +18,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::put('/vehicles/update-available/{id}', [VehicleController::class, 'updateAvailable']);
+
+    Route::post('/vehicles/add-vehicle', [VehicleController::class, 'storeVehicle']);
+
+    Route::get('/vehicles/search-vehicle', [VehicleController::class,'searchVehicles']);
+
+    // Route::post('/verifydocument/{id}', [UploadDocumentController::class, 'verify'])->name('document.verify');
+
+
 });
