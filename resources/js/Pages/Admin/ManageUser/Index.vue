@@ -162,7 +162,7 @@ const deleteUser = async (userID) => {
 <template>
     <div>
 
-        <Head title="List User" />
+        <Head title="List Users" />
         <AuthenticatedLayout>
             <template #header>
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">List Users</h2>
