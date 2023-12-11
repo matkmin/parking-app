@@ -6,14 +6,12 @@ import TextInput from '@/Components/TextInput.vue';
 import AlertByNotify from '@/Components/AlertByNotify.vue';
 import { notify } from "notiwind";
 import Swal from 'sweetalert2';
-import { ref } from 'vue';
+import Pagination from "@/Components/Pagination.vue";
 
 const { users, roles } = defineProps(['users', 'roles']);
 
-const selectedRole = ref('');
-
 const changeUserRole = async (userID) => {
-    const user = users.find(u => u.id === userID);
+    const user = users.data.find(u => u.id === userID);
     try {
         const response = await axios.post(route('admin.change.role', { id: userID }), {
             role: user.selectedRole,
@@ -42,7 +40,7 @@ const changeUserRole = async (userID) => {
         }, 4000);
     }
 
-}
+};
 
 const editUserName = async (user) => {
     try {
@@ -72,7 +70,6 @@ const editUserName = async (user) => {
         }, 4000);
     }
 };
-
 
 const editUserEmail = async (user) => {
     try {
@@ -117,7 +114,6 @@ const editUserEmail = async (user) => {
         }
     }
 };
-
 
 const deleteUser = async (userID) => {
     const confirmMessage = "You won't be able to revert this!";
@@ -187,8 +183,8 @@ const deleteUser = async (userID) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(user, index) in users" :key="user.id" class="border-b">
-                                        <td class="p-4 text-center">{{ index + 1 }}</td>
+                                    <tr v-for="(user, index) in users.data" :key="user.id" class="border-b">
+                                        <td class="p-4 text-center">{{ users.from + index }}</td>
                                         <td class="p-4 font-bold text-center text-blue-600">
                                             <div class="max-w-md mx-auto">
                                                 <TextInput id="user.name" type="text" v-model="user.name"
@@ -223,7 +219,6 @@ const deleteUser = async (userID) => {
                                             <div class="ml-2 text-xs font-semibold text-gray-500">
                                                 * Current Role
                                             </div>
-
                                         </td>
 
                                         <td class="p-4 text-center">
@@ -235,6 +230,7 @@ const deleteUser = async (userID) => {
                                     </tr>
                                 </tbody>
                             </table>
+                            <Pagination class="mt-6" :links="users.links" />
                         </div>
                     </div>
                 </div>

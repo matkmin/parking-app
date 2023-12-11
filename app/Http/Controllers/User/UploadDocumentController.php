@@ -26,7 +26,8 @@ class UploadDocumentController extends Controller
                 fn($q) => $q->where('user_id', auth()->user()->id)
             )
             ->orderBy('created_at')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('User/UploadDocument/uploaddocument', [
             'documents' => $documents,

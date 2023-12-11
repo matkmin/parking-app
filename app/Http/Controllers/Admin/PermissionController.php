@@ -15,7 +15,7 @@ class PermissionController extends Controller
         $this->authorize('admin.viewAny');
 
         return Inertia::render('Admin/ManagePermission/Index', [
-            'permissions' => Permission::all(),
+            'permissions' => Permission::latest()->paginate(10)->withQueryString(),
         ]);
     }
     public function changePermission($roleID, Request $request)

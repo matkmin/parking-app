@@ -33,7 +33,7 @@ const selectedRole = ref(null);
 
 const selectedPermission = ref([]);
 
-const newRoleName = ref(null);
+const newRoleName = ref('');
 
 const showModal = ref(false);
 
@@ -133,7 +133,6 @@ const addNewRole = async () => {
                 text: error.response.data.errors.name[0] || "An error occurred"
             }, 4000);
         } else {
-            // Handle other errors
             notify({
                 group: "error",
                 title: "Error",
@@ -181,7 +180,7 @@ const addNewRole = async () => {
                                     <tr v-for="role in roles" :key="role.id" class="border-b">
                                         <td class="p-4">
                                             <button
-                                                class="px-2 py-1 mb-2 mr-2 text-sm font-bold text-white uppercase bg-red-600 rounded-md cursor-not-allowed">
+                                                class="px-2 py-1 mb-2 mr-2 text-sm font-bold text-white uppercase bg-yellow-600 rounded-md cursor-not-allowed">
                                                 {{ role.name }}
                                             </button>
                                         </td>

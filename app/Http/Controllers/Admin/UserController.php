@@ -18,7 +18,7 @@ class UserController extends Controller
             ->with('roles')
             ->whereDoesntHave('roles', function ($q) {
                 $q->where('name', 'admin');
-            })->get();
+            })->paginate(10)->withQueryString();
 
         $roles = $role::all();
 

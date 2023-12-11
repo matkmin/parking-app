@@ -9,6 +9,7 @@ import axios from 'axios';
 import InputLabel from '@/Components/InputLabel.vue';
 import AlertByNotify from '@/Components/AlertByNotify.vue';
 import { notify } from "notiwind";
+import Pagination from "@/Components/Pagination.vue";
 
 defineProps({
     documents: {
@@ -183,11 +184,10 @@ const viewDocument = (docPath) => {
                         class="flex flex-col items-center justify-center w-full p-8 border-4 border-gray-300 border-dashed rounded dark:border-2">
                         <p class="mb-4 text-sm font-semibold md:text-base dark:text-red-400">
                             <span class="text-purple-500">Note:</span>
-                                The maximum size for each file to be uploaded is <span class="text-green-500">2 MB
+                            The maximum size for each file to be uploaded is <span class="text-green-500">2 MB
                             </span>.
                             Only the following file types are acceptable:
-                            <span
-                                class="font-extrabold text-blue-500">PDF
+                            <span class="font-extrabold text-blue-500">PDF
                             </span>.
                         </p>
 
@@ -221,69 +221,72 @@ const viewDocument = (docPath) => {
                         </div>
                     </form>
 
-                    <div class="mt-8 overflow-x-auto">
-                        <table class="min-w-full bg-white border border-collapse border-gray-300 rounded-lg shadow-md">
-                            <thead>
-                                <tr>
-                                    <th class="px-4 py-3 text-gray-700 bg-gray-100">#</th>
-                                    <th class="px-4 py-3 text-gray-700 bg-gray-100">Document Name</th>
-                                    <th class="px-4 py-3 text-gray-700 bg-gray-100">Upload Date</th>
-                                    <th class="px-4 py-3 text-gray-700 bg-gray-100">Upload By</th>
-                                    <th class="px-4 py-3 text-gray-700 bg-gray-100">Status</th>
-                                    <th class="px-4 py-3 text-gray-700 bg-gray-100">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-center bg-white divide-y divide-gray-200">
-                                <tr v-for="(doc, index) in documents" :key="doc.id">
-                                    <td class="px-4 py-3">{{ index + 1 }}</td>
-                                    <td class="px-4 py-3">{{ doc.filename }}</td>
-                                    <td class="px-4 py-3">{{ doc.created_at }}</td>
-                                    <td class="px-4 py-3">{{ doc.user.email }}</td>
-                                    <td class="px-4 py-3">
-                                        <span v-if="doc.status" class="status verified">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke="currentColor" class="icon">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M5 13l4 4L19 7"></path>
-                                            </svg>
-                                            Verified
-                                        </span>
-                                        <span v-else class="status unverified">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke="currentColor" class="icon">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M6 18L18 6M6 6l12 12"></path>
-                                            </svg>
-                                            Unverified
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div
-                                            class="flex flex-col items-center space-y-2 sm:items-start sm:space-y-0 sm:flex-row sm:space-x-4">
-                                            <PrimaryButton v-if="can('admin.verify')" @click="changeVerifyStatus(doc)"
-                                                :class="{
-                                                    'px-3 py-2  text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-400': doc.status,
-                                                    'px-3 py-2  text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-400': !doc.status
-                                                }">
-                                                {{ doc.status ? 'Unverify' : 'Verify' }}
-                                            </PrimaryButton>
+                    <div class="overflow-x-auto bg-white border rounded-md shadow-md">
+                        <div class="p-6 text-gray-900">
+                            <table class="min-w-full overflow-hidden">
+                                <thead class="bg-gray-100 border-b">
+                                    <tr>
+                                        <th class="px-4 py-3 text-gray-700 bg-gray-100">#</th>
+                                        <th class="px-4 py-3 text-gray-700 bg-gray-100">Document Name</th>
+                                        <th class="px-4 py-3 text-gray-700 bg-gray-100">Upload Date</th>
+                                        <th class="px-4 py-3 text-gray-700 bg-gray-100">Upload By</th>
+                                        <th class="px-4 py-3 text-gray-700 bg-gray-100">Status</th>
+                                        <th class="px-4 py-3 text-gray-700 bg-gray-100">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-center bg-white divide-y divide-gray-200">
+                                    <tr v-for="(doc, index) in documents.data" :key="doc.id">
+                                        <td class="px-4 py-3">{{ documents.from + index }}</td>
+                                        <td class="px-4 py-3">{{ doc.filename }}</td>
+                                        <td class="px-4 py-3">{{ doc.created_at }}</td>
+                                        <td class="px-4 py-3">{{ doc.user.email }}</td>
+                                        <td class="px-4 py-3">
+                                            <span v-if="doc.status" class="status verified">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke="currentColor" class="icon">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                                Verified
+                                            </span>
+                                            <span v-else class="status unverified">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke="currentColor" class="icon">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                                Unverified
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <div
+                                                class="flex flex-col items-center space-y-2 sm:items-start sm:space-y-0 sm:flex-row sm:space-x-4">
+                                                <PrimaryButton v-if="can('admin.verify')" @click="changeVerifyStatus(doc)"
+                                                    :class="{
+                                                        'px-3 py-2  text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-400': doc.status,
+                                                        'px-3 py-2  text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-400': !doc.status
+                                                    }">
+                                                    {{ doc.status ? 'Unverify' : 'Verify' }}
+                                                </PrimaryButton>
 
-                                            <PrimaryButton @click="viewDocument(doc.file_path)"
-                                                class="px-3 py-2 text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-yellow-400">
-                                                View
-                                            </PrimaryButton>
+                                                <PrimaryButton @click="viewDocument(doc.file_path)"
+                                                    class="px-3 py-2 text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                                    View
+                                                </PrimaryButton>
 
-                                            <PrimaryButton v-if="can('user.delete') && !doc.status"
-                                                @click="deleteDocument(doc.id)"
-                                                class="px-3 py-2 text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-pink-400"
-                                                :disabled="doc.status">
-                                                Delete
-                                            </PrimaryButton>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                                <PrimaryButton v-if="can('user.delete') && !doc.status"
+                                                    @click="deleteDocument(doc.id)"
+                                                    class="px-3 py-2 text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                                                    :disabled="doc.status">
+                                                    Delete
+                                                </PrimaryButton>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <Pagination class="mt-6" :links="documents.links" />
+                        </div>
                     </div>
                 </div>
             </div>

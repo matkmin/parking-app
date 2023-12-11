@@ -7,15 +7,16 @@ import { notify } from "notiwind";
 import AlertByNotify from '@/Components/AlertByNotify.vue';
 import Swal from 'sweetalert2';
 import { ref } from 'vue';
+import Pagination from "@/Components/Pagination.vue";
 
 const props = defineProps({
     permissions: {
-        type: Array
+        type: Object
     }
 });
 
 
-const newPermissionName = ref(null);
+const newPermissionName = ref('');
 
 const addNewPermissionName = async () => {
     try {
@@ -38,12 +39,19 @@ const addNewPermissionName = async () => {
             }, 4000);
         }
     } catch (error) {
-        console.error('Error adding permission name:', error);
-        notify({
-            group: "error",
-            title: "Error",
-            text: "An error occurred while adding the permission name"
-        }, 4000);
+        if (error.response && error.response.status === 422) {
+            notify({
+                group: "error",
+                title: "Error",
+                text: error.response.data.errors.name[0] || "An error occurred"
+            }, 4000);
+        } else {
+            notify({
+                group: "error",
+                title: "Error",
+                text: "An error occurred while adding the permission name"
+            }, 4000);
+        }
     }
 }
 
@@ -133,10 +141,11 @@ const deletePermissionName = async (permission) => {
                 <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div class="mb-2">
                         <div class="flex items-center px-2">
-                            <InputLabel class="mr-2">
+                            <label class="mr-2">
                                 Press Enter to Save New Permission Name:
-                            </InputLabel>
-                            <TextInput class="w-1/2 mr-2 text-sm" v-model="newPermissionName" @keyup.enter="addNewPermissionName"
+                            </label>
+                            <TextInput class="w-1/2 mr-2 text-sm" v-model="newPermissionName"
+                                @keyup.enter="addNewPermissionName"
                                 placeholder="Enter new permission name (example: admin.test)">
                             </TextInput>
                         </div>
@@ -152,14 +161,14 @@ const deletePermissionName = async (permission) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(permission, index) in permissions" :key="permission.id" class="border-b">
-                                        <td class="p-4 text-center">{{ index + 1 }}</td>
+                                    <tr v-for="(permission, index) in permissions.data" :key="permission.id"
+                                        class="border-b">
+                                        <td class="p-4 text-center">{{ permissions.from + index }}</td>
                                         <td class="p-4 text-center">
                                             <TextInput id="permission_name" type="text" v-model="permission.name"
                                                 @keyup.enter="savePermissionName(permission)"
                                                 @blur="savePermissionName(permission)"
-                                                class="w-full py-2 text-center border border-gray-300 rounded-md focus:outline-none focus:border-teal-500"
-                                            />
+                                                class="w-full py-2 text-center border border-gray-300 rounded-md focus:outline-none focus:border-teal-500" />
                                         </td>
                                         <td class="text-center">
                                             <button @click="deletePermissionName(permission)"
@@ -170,6 +179,7 @@ const deletePermissionName = async (permission) => {
                                     </tr>
                                 </tbody>
                             </table>
+                            <Pagination class="mt-6" :links="permissions.links" />
                         </div>
                     </div>
                 </div>
