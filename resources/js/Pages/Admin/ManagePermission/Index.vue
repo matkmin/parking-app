@@ -8,6 +8,7 @@ import AlertByNotify from '@/Components/AlertByNotify.vue';
 import Swal from 'sweetalert2';
 import { ref } from 'vue';
 import Pagination from "@/Components/Pagination.vue";
+import InputLabel from '@/Components/InputLabel.vue';
 
 const props = defineProps({
     permissions: {
@@ -141,9 +142,9 @@ const deletePermissionName = async (permission) => {
                 <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div class="mb-2">
                         <div class="flex items-center px-2">
-                            <label class="mr-2">
+                            <InputLabel class="mr-2">
                                 Press Enter to Save New Permission Name:
-                            </label>
+                            </InputLabel>
                             <TextInput class="w-1/2 mr-2 text-sm" v-model="newPermissionName"
                                 @keyup.enter="addNewPermissionName"
                                 placeholder="Enter new permission name (example: admin.test)">
