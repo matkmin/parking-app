@@ -8,7 +8,6 @@ use App\Models\UploadDocument;
 use App\Services\DocumentService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFileRequest;
-use Illuminate\Support\Facades\Storage;
 
 class UploadDocumentController extends Controller
 {

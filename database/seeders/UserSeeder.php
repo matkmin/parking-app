@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Admin',
             'email' => 'aminshamsuddin98@gmail.com',
-            'password' => bcrypt('Amin1234567_'),
+            'password' => bcrypt('12345678'),
         ])->roles()->sync(Role::where('name', RoleName::ADMIN->value)->first());
     }
 
@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
         $user = User::create([
             'name' => 'User',
             'email' => 'muqri@seda.gov.my',
-            'password' => bcrypt('Amin1234567_'),
+            'password' => bcrypt('12345678'),
         ]);
         $user->roles()->sync(Role::where('name', RoleName::USER->value)->first());
     }

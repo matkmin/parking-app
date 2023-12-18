@@ -29,8 +29,8 @@ class RoleSeeder extends Seeder
     protected function createAdminRole(): void
     {
         $permission = Permission::query()
-            ->where('name', 'like', 'user.%')
-            ->orWhere('name', 'like', 'vehicle.%')
+            ->where('name', 'like', 'admin.%')
+            ->orWhere('name', 'like', 'user.%')
             ->pluck('id');
 
         $this->createRole(RoleName::ADMIN, $permission);
@@ -38,7 +38,7 @@ class RoleSeeder extends Seeder
     protected function createUserRole(): void
     {
         $permission = Permission::whereIn('name', [
-            'vehicle.viewany',
+            'user.viewany',
         ])->get();
 
         $this->createRole(RoleName::USER, $permission);

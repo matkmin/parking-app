@@ -24,8 +24,8 @@ class PermissionSeeder extends Seeder
         ];
 
         $resources = [
+            'admin',
             'user',
-            'vehicle',
         ];
 
         collect($resources)

@@ -219,31 +219,31 @@ const addNewRole = async () => {
                     <div class="fixed inset-0 transition-opacity" @click="showModal = false">
                         <div class="absolute inset-0 bg-black opacity-50"></div>
                     </div>
+
                     <div v-for="role in roles" :key="role.id" v-show="role.id === selectedRole"
-                        class="relative p-10 py-5 bg-white rounded-lg shadow-xl">
-                        <h2 class="mb-4 font-bold text-blue-600 uppercase">
-                            Assign Permission For {{ role.name }}
-                        </h2>
+                        class="relative w-full max-h-screen p-6 m-4 overflow-y-auto bg-white rounded-lg shadow-xl sm:w-2/3 md:w-1/2 lg:w-1/3 xl:w-1/4">
+                        <h2 class="mb-4 font-bold text-blue-600 uppercase">Assign Permission For {{ role.name }}</h2>
+
                         <div v-for="permission in permissions" :key="permission.id" class="flex items-center mb-2">
                             <input type="checkbox" :id="permission.name" :name="permission.name" :value="permission.id"
                                 :checked="isChecked(role, permission)" v-model="selectedPermission"
                                 class="border-purple-300 rounded-md cursor-pointer focus:ring-2 focus:ring-purple-400" />
-                            <InputLabel for="permission.name" class="ml-2 text-gray-700 ">{{ permission.name }}
-                            </InputLabel>
+                            <label :for="permission.name" class="ml-2 text-gray-700">{{ permission.name }}</label>
                         </div>
+
                         <div class="text-right">
-                            <PrimaryButton @click="savePermission()"
+                            <PrimaryButton @click="savePermission"
                                 class="flex justify-center py-2 text-sm text-white transition-transform rounded-full shadow-md cursor-pointer bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-teal-400">
                                 Save New Permission
                             </PrimaryButton>
                         </div>
-                        <button class="absolute text-gray-600 top-4 right-4 hover:text-gray-800" @click="showModal = false">
-                            X
-                        </button>
+
+                        <button class="absolute text-gray-600 top-4 right-4 hover:text-gray-800"
+                            @click="showModal = false">X</button>
                     </div>
                 </div>
+
             </div>
         </AuthenticatedLayout>
-    </div>
-</template>
+</div></template>
 
